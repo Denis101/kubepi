@@ -1,0 +1,7 @@
+---
+[kube-master]
+master1 ansible_host=192.168.1.200
+
+[kube-worker]
+worker1 ansible_host=192.168.1.210
+worker2 ansible_host=192.168.1.211

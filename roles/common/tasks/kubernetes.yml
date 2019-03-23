@@ -1,0 +1,51 @@
+---
+- name: Update apt-get
+  apt: update_cache=yes
+
+- name: Download docker
+  get_url:
+    url: https://get.docker.com
+    dest: /tmp/install-docker.sh
+
+- name: Install docker
+  shell: sh /tmp/install-docker.sh
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Backup existing cgroups
+  copy:
+    src: /boot/cmdline.txt
+    dest: /boot/cmdline.txt.backup
+
+- name: Update cgroups
+  copy:
+    content: "{{lookup('file', '/boot/cmdline.txt') | replace('\n', '')}} cgroup_enable=cpuset cgroup_enable=memory"
+    dest: /boot/cmdline.txt
+
+- name: Download google apt key
+  get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /tmp/apt-key.gpg
+
+- name: Add google apt-key
+  apt_key:
+    file: /tmp/apt-key.gpg
+
+- name: Add kubernetes apt repository
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+
+- name: Install kubeadm
+  apt:
+    name: kubeadm
+
+- name: Reboot
+  reboot:

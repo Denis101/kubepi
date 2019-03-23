@@ -1,0 +1,14 @@
+---
+- hosts: kube-master
+  sudo: yes
+
+  roles:
+    - common
+    - kube-master
+
+- hosts: kube-worker
+  sudo: yes
+
+  roles:
+    - common
+    - kube-worker
