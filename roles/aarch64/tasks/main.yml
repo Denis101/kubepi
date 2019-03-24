@@ -1,0 +1,18 @@
+---
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: swap
+    fstype: swap
+    state: absent
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Backup existing cgroups
+  shell: cp /boot/firmware/cmdline.txt /boot/firmware/cmdline.txt.backup
+
+- name: Update cgroups
+  shell: |
+    orig="$(head -n1 /boot/firmware/cmdline.txt) cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
+    echo $orig | tee /boot/firmware/cmdline.txt
