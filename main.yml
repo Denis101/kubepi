@@ -1,14 +1,14 @@
 ---
 - hosts: kube-master
-  sudo: yes
+  become: true
+  become_user: root
 
   roles:
     - common
-    - kube-master
 
 - hosts: kube-worker
-  sudo: yes
+  become: true
+  become_user: root
 
   roles:
     - common
-    - kube-worker
