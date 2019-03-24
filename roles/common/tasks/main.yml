@@ -48,4 +48,4 @@
     name: kubeadm
 
 - name: Reboot
-  reboot:
+  shell: shutdown -r now
