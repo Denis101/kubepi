@@ -36,13 +36,13 @@
 
 - name: Backup existing cgroups
   copy:
-    src: /boot/cmdline.txt
-    dest: /boot/cmdline.txt.backup
+    src: /boot/firmware/cmdline.txt
+    dest: /boot/firmware/cmdline.txt.backup
 
 - name: Update cgroups
   copy:
-    content: "{{lookup('file', '/boot/cmdline.txt') | replace('\n', '')}} cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory\n"
-    dest: /boot/cmdline.txt
+    content: "{{lookup('file', '/boot/firmware/cmdline.txt') | replace('\n', '')}} cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory\n"
+    dest: /boot/firmware/cmdline.txt
 
 - name: Check kubeadm
   stat:
