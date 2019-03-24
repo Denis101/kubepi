@@ -1,10 +1,8 @@
 ---
-- hosts: kube-master
+- hosts: all
   become: true
-  roles:
-    - common
-
-- hosts: kube-worker
-  become: true
+  pre_tasks:
+    - name: 'Install python2'
+      raw: sudo apt-get update && sudo apt-get install -y python-minimal
   roles:
     - common

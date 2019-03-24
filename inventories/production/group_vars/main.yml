@@ -2,4 +2,3 @@ k8s:
   ansible_user: ansible
   ansible_ssh_pass: kubepi-setup123
   ansible_become_user: root
-  ansible_become_pass: kubepi-setup123
