@@ -2,19 +2,27 @@
 - name: Update apt-get
   apt: update_cache=yes
 
+- name: Check docker
+  stat:
+    path: /usr/bin/docker
+  register: docker
+
 - name: Download docker
   get_url:
     url: https://get.docker.com
     dest: /tmp/install-docker.sh
+  when: docker.stat.exists == false
 
 - name: Install docker
   shell: sh /tmp/install-docker.sh
+  when: docker.stat.exists == false
 
 - name: Add client user to docker group
   user:
     name: client
     groups: docker
     append: true
+  when: docker.stat.exists == false
 
 - name: Remove swapfile from /etc/fstab
   mount:
@@ -33,25 +41,34 @@
 
 - name: Update cgroups
   copy:
-    content: "{{lookup('file', '/boot/cmdline.txt') | replace('\n', '')}} cgroup_enable=cpuset cgroup_enable=memory"
+    content: "{{lookup('file', '/boot/cmdline.txt') | replace('\n', '')}} cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory\n"
     dest: /boot/cmdline.txt
+
+- name: Check kubeadm
+  stat:
+    path: /usr/bin/kubeadm
+  register: kubeadm
 
 - name: Download google apt key
   get_url:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     dest: /tmp/apt-key.gpg
+  when: kubeadm.stat.exists == false
 
 - name: Add google apt-key
   apt_key:
     file: /tmp/apt-key.gpg
+  when: kubeadm.stat.exists == false
 
 - name: Add kubernetes apt repository
   apt_repository:
     repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+  when: kubeadm.stat.exists == false
 
 - name: Install kubeadm
   apt:
     name: kubeadm
+  when: kubeadm.stat.exists == false
 
 - name: Pull kubeadm config images
   shell: kubeadm config images pull -v3
