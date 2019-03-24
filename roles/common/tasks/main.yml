@@ -10,6 +10,12 @@
 - name: Install docker
   shell: sh /tmp/install-docker.sh
 
+- name: Add client user to docker group
+  user:
+    name: client
+    groups: docker
+    append: true
+
 - name: Remove swapfile from /etc/fstab
   mount:
     name: swap
@@ -46,6 +52,3 @@
 - name: Install kubeadm
   apt:
     name: kubeadm
-
-- name: Reboot
-  shell: shutdown -r now
