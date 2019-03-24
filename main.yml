@@ -1,14 +1,10 @@
 ---
 - hosts: kube-master
   become: true
-  become_user: root
-
   roles:
     - common
 
 - hosts: kube-worker
   become: true
-  become_user: root
-
   roles:
     - common
