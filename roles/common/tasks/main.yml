@@ -52,3 +52,6 @@
 - name: Install kubeadm
   apt:
     name: kubeadm
+
+- name: Pull kubeadm config images
+  shell: kubeadm config images pull -v3
