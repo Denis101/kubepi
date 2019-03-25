@@ -32,7 +32,7 @@
 
 - name: Check the cluster health
   docker_container:
-    image: {{ etcd_image }}:{{ etcd_tag }}
+    image: "{{ etcd_image }}:{{ etcd_tag }}"
     network_mode: host
     volumes:
       - /etc/kubernetes:/etc/kubernetes
