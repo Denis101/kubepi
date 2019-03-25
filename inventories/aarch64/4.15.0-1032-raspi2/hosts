@@ -8,3 +8,9 @@ worker2 ansible_host=192.168.1.211
 [aarch64:children]
 aarch64-k8s-master
 aarch64-k8s-worker
+
+[etcd:children]
+aarch64
+
+[etcd-ca:children]
+aarch64-k8s-master

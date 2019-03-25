@@ -1,9 +1,11 @@
 ---
 - hosts: aarch64
   become: true
-  pre_tasks:
-    - name: 'Install python2'
-      raw: sudo apt-get update && sudo apt-get install -y python-minimal
   roles:
     - aarch64
     - k8s
+
+- hosts: etcd
+  become: true
+  roles:
+    - etcd

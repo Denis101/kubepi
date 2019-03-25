@@ -1,0 +1,35 @@
+---
+- name: Copy etcd service manager config
+  copy:
+    src: 20-etcd-service-manager.conf
+    dest: /etc/systemd/system/kubelet.service/200etcd-service-manager.conf
+    remote_src: true
+
+- name: Create kubeadm config
+  template:
+    src: kubeadmcfg.yml.j2
+    dest: /tmp/kubeadmcfg.yml
+
+---
+- name: Generate ca certs (master)
+  shell: kubeadm init phase certs etcd-ca
+  when: gen_ca_certs == true
+
+- name: Create etcd certs
+  shell: |
+    kubeadm init phase certs etcd-server --config=/tmp/kubeadmcfg.yaml
+    kubeadm init phase certs etcd-peer --config=/tmp/kubeadmcfg.yaml
+    kubeadm init phase certs etcd-healthcheck-client --config=/tmp/kubeadmcfg.yaml
+    kubeadm init phase certs apiserver-etcd-client --config=/tmp/kubeadmcfg.yaml
+
+- name: Create etcd manifests
+  shell: kubeadm init phase etcd local --config=/tmp/kubeadmcfg.yml
+
+- name: Check the cluster health
+  docker_container:
+    image: {{ etcd_image }}:{{ etcd_tag }}
+    network_mode: host
+    volumes:
+      - /etc/kubernetes:/etc/kubernetes
+    detach: false
+    command: etcdctl --cert-file /etc/kubernetes/pki/etcd/peer.crt --key-file /etc/kubernetes/pki/etcd/peer.key --ca-file /etc/kubernetes/pki/etcd/ca.crt --endpoints https://{{ hostvars[groups['etcd-ca'][0]].ansible_default_ipv4.address }}:2379 cluster-health

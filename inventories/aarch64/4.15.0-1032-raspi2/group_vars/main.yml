@@ -2,3 +2,8 @@ k8s:
   ansible_user: ansible
   ansible_ssh_pass: kubepi-setup123
   ansible_become_user: root
+etcd:
+  etcd_image: k8s.gcr.io/etcd
+  etcd_version: 3.3.10
+etcd-ca:
+  gen_ca_certs: true
