@@ -7,7 +7,7 @@ etcd:
         peerCertSANs:
         - "{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}"
         extraArgs:
-            initial-cluster: "{% for h in groups['etcd'] %}{{ hostvars[h].ansible_hostname }}=https://{{ {{ hostvars[h].ansible_default_ipv4.address }}:2380,{% endfor %}"
+            initial-cluster: "{% for h in groups['etcd'] %}{{ hostvars[h].ansible_hostname }}=https://{{ hostvars[h].ansible_default_ipv4.address }}:2380,{% endfor %}"
             initial-cluster-state: new
             name: {{ inventory_hostname }}
             listen-peer-urls: https://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:2380
