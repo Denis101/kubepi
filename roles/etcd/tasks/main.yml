@@ -3,7 +3,6 @@
   copy:
     src: "{{ role_path }}/files/20-etcd-service-manager.conf"
     dest: /etc/systemd/system/kubelet.service/200etcd-service-manager.conf
-    remote_src: true
 
 - name: Create kubeadm config
   template:
