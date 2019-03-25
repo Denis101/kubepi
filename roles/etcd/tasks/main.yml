@@ -1,13 +1,13 @@
 ---
 - name: Copy etcd service manager config
   copy:
-    src: 20-etcd-service-manager.conf
+    src: "{{ role_path }}/files/20-etcd-service-manager.conf"
     dest: /etc/systemd/system/kubelet.service/200etcd-service-manager.conf
     remote_src: true
 
 - name: Create kubeadm config
   template:
-    src: kubeadmcfg.yaml.j2
+    src: "{{ role_path }}/templates/kubeadmcfg.yaml.j2"
     dest: /tmp/kubeadmcfg.yaml
 
 - name: Generate ca certs (master)
