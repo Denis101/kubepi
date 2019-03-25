@@ -5,5 +5,6 @@ k8s:
 etcd:
   etcd_image: k8s.gcr.io/etcd
   etcd_version: 3.3.10
+  gen_ca_certs: false
 etcd-ca:
   gen_ca_certs: true
