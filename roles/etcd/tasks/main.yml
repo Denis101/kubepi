@@ -7,10 +7,9 @@
 
 - name: Create kubeadm config
   template:
-    src: kubeadmcfg.yml.j2
-    dest: /tmp/kubeadmcfg.yml
+    src: kubeadmcfg.yaml.j2
+    dest: /tmp/kubeadmcfg.yaml
 
----
 - name: Generate ca certs (master)
   shell: kubeadm init phase certs etcd-ca
   when: gen_ca_certs == true
@@ -23,7 +22,13 @@
     kubeadm init phase certs apiserver-etcd-client --config=/tmp/kubeadmcfg.yaml
 
 - name: Create etcd manifests
-  shell: kubeadm init phase etcd local --config=/tmp/kubeadmcfg.yml
+  shell: kubeadm init phase etcd local --config=/tmp/kubeadmcfg.yaml
+
+- name: Set etcd container image
+  replace:
+    destfile: /etc/kubernetes/manifests/etcd.yaml
+    regexp: '(\s+)image: k8s\.gcr\.io/etcd:3\.2\.24(\s+.*)?$'
+    replace: '\1image:{{ etcd_image }}:{{ etcd_tag }}\2'
 
 - name: Check the cluster health
   docker_container:
