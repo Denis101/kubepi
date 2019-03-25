@@ -2,7 +2,7 @@
 - name: Copy etcd service manager config
   copy:
     src: "{{ role_path }}/files/20-etcd-service-manager.conf"
-    dest: /etc/systemd/system/kubelet.service/200etcd-service-manager.conf
+    dest: /etc/systemd/system/kubelet.service.d/200-etcd-service-manager.conf
 
 - name: Create kubeadm config
   template:
