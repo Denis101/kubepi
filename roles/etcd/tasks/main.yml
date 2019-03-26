@@ -13,12 +13,17 @@
   shell: kubeadm init phase certs etcd-ca
   when: gen_ca_certs == true
 
-- name: Copy ca.crt from etcd-ca to etcd group
-  synchronize:
+- name: Fetch ca.crt from etcd-ca group
+  fetch:
     src: /etc/kubernetes/pki/etcd/ca.crt
+    dest: /tmp/ca.crt
+  when: gen_ca_certs == true
+
+- name: Copy ca.crt to etcd group
+  copy:
+    src: /tmp/ca.crt
     dest: /etc/kubernetes/pki/etcd/ca.crt
-  delegate_to: "{{ hostvars[groups['etcd-ca'][0]].ansible_hostname }}"
-  when: inventory_hostname != hostvars[groups['etcd-ca'][0]].ansible_hostname
+  when: gen_ca_certs == false
 
 - name: Create etcd certs
   shell: |
