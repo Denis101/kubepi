@@ -25,7 +25,7 @@
     src: /etc/kubernetes/pki/etcd/ca.crt
     dest: /etc/kubernetes/pki/etcd/ca.crt
     delegate_to: hostvars[groups['etcd-ca'][0]].ansible_hostname
-  when: {{ inventory_hostname }} != hostvars[groups['etcd-ca'][0]].ansible_hostname
+  when: inventory_hostname != hostvars[groups['etcd-ca'][0]].ansible_hostname
 
 - name: Create etcd manifests
   shell: kubeadm init phase etcd local --config=/tmp/kubeadmcfg.yaml
