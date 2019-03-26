@@ -17,6 +17,7 @@
   fetch:
     src: /etc/kubernetes/pki/etcd/ca.crt
     dest: /tmp/ca.crt
+    flat: yes
   when: gen_ca_certs == true
 
 - name: Copy ca.crt to etcd group
