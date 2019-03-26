@@ -63,6 +63,7 @@
 
 - name: Check the cluster health
   docker_container:
+    name: etcd_healthcheck
     image: "{{ etcd_image }}:{{ etcd_tag }}"
     network_mode: host
     volumes:
