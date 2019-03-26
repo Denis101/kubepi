@@ -59,7 +59,7 @@
   replace:
     destfile: /etc/kubernetes/manifests/etcd.yaml
     regexp: '(\s+)image: k8s\.gcr\.io/etcd:3\.2\.24(\s+.*)?$'
-    replace: '\1image:{{ etcd_image }}:{{ etcd_tag }}\2'
+    replace: '\1image: {{ etcd_image }}:{{ etcd_tag }}\2'
 
 - name: Check the cluster health
   docker_container:
