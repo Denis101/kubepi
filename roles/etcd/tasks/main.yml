@@ -20,10 +20,23 @@
     flat: yes
   when: gen_ca_certs == true
 
+- name: Fetch ca.key from etcd-ca group
+  fetch:
+    src: /etc/kubernetes/pki/etcd/ca.key
+    dest: /tmp/ca.key
+    flat: yes
+  when: gen_ca_certs == true
+
 - name: Copy ca.crt to etcd group
   copy:
     src: /tmp/ca.crt
     dest: /etc/kubernetes/pki/etcd/ca.crt
+  when: gen_ca_certs == false
+
+- name: Copy ca.key to etcd group
+  copy:
+    src: /tmp/ca.key
+    dest: /etc/kubernetes/pki/etcd/ca.key
   when: gen_ca_certs == false
 
 - name: Create etcd certs
@@ -32,6 +45,12 @@
     kubeadm init phase certs etcd-peer --config=/tmp/kubeadmcfg.yaml
     kubeadm init phase certs etcd-healthcheck-client --config=/tmp/kubeadmcfg.yaml
     kubeadm init phase certs apiserver-etcd-client --config=/tmp/kubeadmcfg.yaml
+
+- name: Remote ca.key from etcd group
+  file:
+    path: /etc/kubernetes/pki/etcd/ca.key
+    state: absent
+  when: gen_ca_certs == false
 
 - name: Create etcd manifests
   shell: kubeadm init phase etcd local --config=/tmp/kubeadmcfg.yaml
