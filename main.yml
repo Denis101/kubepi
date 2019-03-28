@@ -9,3 +9,8 @@
   become: true
   roles:
     - etcd
+
+- hosts: aarch64-k8s-master
+  become: true
+  roles:
+    - master

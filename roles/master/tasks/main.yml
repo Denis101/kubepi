@@ -1,0 +1,11 @@
+---
+- name: Create kubeadm config
+  template:
+    src: "{{ role_path }}/templates/kubeadm-config.j2"
+    dest: /tmp/kubeadm-config.yaml
+
+- name: Remove kubeadm-config
+  file:
+    path: /tmp/kubeadm-config.yaml
+    state: absent
+

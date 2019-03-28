@@ -2,7 +2,7 @@
 - name: Copy etcd service manager config
   copy:
     src: "{{ role_path }}/files/20-etcd-service-manager.conf"
-    dest: /etc/systemd/system/kubelet.service.d/200-etcd-service-manager.conf
+    dest: /etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
 
 - name: Create kubeadm config
   template:
@@ -46,7 +46,7 @@
     kubeadm init phase certs etcd-healthcheck-client --config=/tmp/kubeadmcfg.etcd-setup.yaml
     kubeadm init phase certs apiserver-etcd-client --config=/tmp/kubeadmcfg.etcd-setup.yaml
 
-- name: Remote ca.key from etcd group
+- name: Remove ca.key from etcd group
   file:
     path: /etc/kubernetes/pki/etcd/ca.key
     state: absent
