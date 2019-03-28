@@ -6,8 +6,8 @@
 
 - name: Create kubeadm config
   template:
-    src: "{{ role_path }}/templates/kubeadmcfg.yaml.j2"
-    dest: /tmp/kubeadmcfg.yaml
+    src: "{{ role_path }}/templates/kubeadmcfg.etcd-setup.yaml.j2"
+    dest: /tmp/kubeadmcfg.etcd-setup.yaml
 
 - name: Generate ca certs (master)
   shell: kubeadm init phase certs etcd-ca
@@ -41,10 +41,10 @@
 
 - name: Create etcd certs
   shell: |
-    kubeadm init phase certs etcd-server --config=/tmp/kubeadmcfg.yaml
-    kubeadm init phase certs etcd-peer --config=/tmp/kubeadmcfg.yaml
-    kubeadm init phase certs etcd-healthcheck-client --config=/tmp/kubeadmcfg.yaml
-    kubeadm init phase certs apiserver-etcd-client --config=/tmp/kubeadmcfg.yaml
+    kubeadm init phase certs etcd-server --config=/tmp/kubeadmcfg.etcd-setup.yaml
+    kubeadm init phase certs etcd-peer --config=/tmp/kubeadmcfg.etcd-setup.yaml
+    kubeadm init phase certs etcd-healthcheck-client --config=/tmp/kubeadmcfg.etcd-setup.yaml
+    kubeadm init phase certs apiserver-etcd-client --config=/tmp/kubeadmcfg.etcd-setup.yaml
 
 - name: Remote ca.key from etcd group
   file:
@@ -53,20 +53,18 @@
   when: gen_ca_certs == false
 
 - name: Create etcd manifests
-  shell: kubeadm init phase etcd local --config=/tmp/kubeadmcfg.yaml
+  shell: kubeadm init phase etcd local --config=/tmp/kubeadmcfg.etcd-setup.yaml
 
 - name: Set etcd container image
   replace:
     destfile: /etc/kubernetes/manifests/etcd.yaml
     regexp: '(\s+)image: k8s\.gcr\.io/etcd:3\.2\.24(\s+.*)?$'
     replace: '\1image: {{ etcd_image }}:{{ etcd_tag }}\2'
+  notify:
+    - Restart kubelet
 
-- name: Check the cluster health
-  docker_container:
-    name: etcd_healthcheck
-    image: "{{ etcd_image }}:{{ etcd_tag }}"
-    network_mode: host
-    volumes:
-      - /etc/kubernetes:/etc/kubernetes
-    detach: false
-    command: etcdctl --cert-file /etc/kubernetes/pki/etcd/peer.crt --key-file /etc/kubernetes/pki/etcd/peer.key --ca-file /etc/kubernetes/pki/etcd/ca.crt --endpoints https://{{ hostvars[groups['etcd-ca'][0]].ansible_default_ipv4.address }}:2379 cluster-health
+- name: Remove etcd setup kubeadmcfg
+  file:
+    path: /tmp/kubeadmcfg.etcd-setup.yaml
+    state: absent
+
