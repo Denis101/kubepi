@@ -3,7 +3,7 @@
   become: true
   roles:
     - aarch64
-    - k8s
+    - kubeadm
 
 - hosts: etcd
   become: true
