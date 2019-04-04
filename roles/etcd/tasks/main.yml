@@ -9,6 +9,11 @@
     src: "{{ role_path }}/templates/kubeadmcfg.etcd-setup.yaml.j2"
     dest: /tmp/kubeadmcfg.etcd-setup.yaml
 
+- name: Ensure kubernetes pki directory exists
+  file:
+    path: /etc/kubernetes/pki
+    state: directory
+
 - name: Generate ca certs (master)
   shell: kubeadm init phase certs etcd-ca
   when: gen_ca_certs == true
