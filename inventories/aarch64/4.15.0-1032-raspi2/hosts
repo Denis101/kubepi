@@ -14,10 +14,10 @@ worker7 ansible_host=192.168.1.216
 aarch64-k8s-master
 aarch64-k8s-worker
 
-[etcd:children]
-worker5
-worker6
-worker7
+[etcd]
+worker5 ansible_host=192.168.1.214
+worker6 ansible_host=192.168.1.215
+worker7 ansible_host=192.168.1.216
 
-[etcd-ca:children]
-worker5
+[etcd-ca]
+worker5 ansible_host=192.168.1.214
