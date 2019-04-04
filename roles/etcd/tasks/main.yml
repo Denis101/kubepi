@@ -11,7 +11,7 @@
 
 - name: Ensure kubernetes pki directory exists
   file:
-    path: /etc/kubernetes/pki
+    path: /etc/kubernetes/pki/etcd
     state: directory
 
 - name: Generate ca certs (master)
