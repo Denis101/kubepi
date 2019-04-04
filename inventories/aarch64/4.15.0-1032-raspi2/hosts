@@ -1,23 +1,23 @@
 [aarch64-k8s-master]
-master1 ansible_host=192.168.1.200
+master1
 
 [aarch64-k8s-worker]
-worker1 ansible_host=192.168.1.210
-worker2 ansible_host=192.168.1.211
-worker3 ansible_host=192.168.1.212
-worker4 ansible_host=192.168.1.213
-worker5 ansible_host=192.168.1.214
-worker6 ansible_host=192.168.1.215
-worker7 ansible_host=192.168.1.216
+worker1
+worker2
+worker3
+worker4
+worker5
+worker6
+worker7
 
 [aarch64:children]
 aarch64-k8s-master
 aarch64-k8s-worker
 
 [etcd]
-worker5 ansible_host=192.168.1.214
-worker6 ansible_host=192.168.1.215
-worker7 ansible_host=192.168.1.216
+worker5
+worker6
+worker7
 
 [etcd-ca]
-worker5 ansible_host=192.168.1.214
+worker5
