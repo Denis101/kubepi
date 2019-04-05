@@ -4,17 +4,62 @@
     path: /etc/kubernetes/pki/etcd
     state: directory
 
+- name: Check ca.crt
+  stat:
+    path: /etc/kubernetes/pki/etcd/ca.key
+  register: ca_crt
+
 - name: Fetch ca.crt from etcd-ca group
   fetch:
     src: /etc/kubernetes/pki/etcd/ca.key
     dest: /tmp/ca.key
     flat: yes
   delegate_to: "{{ hostvars[groups['etcd-ca'][0]].ansible_hostname }}"
+  when: ca_crt.stat.exists == false
 
 - name: Copy ca.crt to master
   copy:
     src: /tmp/ca.crt
     dest: /etc/kubernetes/pki/etcd/ca.crt
+  when: ca_crt.stat.exists == false
+
+- name: Check apiserver-etcd-client.crt
+  stat:
+    path: /etc/kubernetes/pki/apiserver-etcd-client.crt
+  register: apiserver_client_crt
+
+- name: Fetch apiserver-etcd-client.crt from etcd-ca group
+  fetch:
+    src: /etc/kubernetes/pki/apiserver-etcd-client.crt
+    dest: /tmp/apiserver-etcd-client.crt
+    flat: yes
+  delegate_to: "{{ hostvars[groups['etcd-ca'][0]].ansible_hostname }}"
+  when: apiserver_client_crt.stat.exists == false
+
+- name: Copy apiserver-etcd-client.crt to master
+  copy:
+    src: /tmp/apiserver-etcd-client.crt
+    dest: /etc/kubernetes/pki/apiserver-etcd-client.crt
+  when: apiserver_client_crt.stat.exists == false
+
+- name: Check apiserver-etcd-client.key
+  stat:
+    path: /etc/kubernetes/pki/apiserver-etcd-client.key
+  register: apiserver_client_key
+
+- name: Fetch apiserver-etcd-client.key from etcd-ca group
+  fetch:
+    src: /etc/kubernetes/pki/apiserver-etcd-client.key
+    dest: /tmp/apiserver-etcd-client.key
+    flat: yes
+  delegate_to: "{{ hostvars[groups['etcd-ca'][0]].ansible_hostname }}"
+  when: apiserver_client_key.stat.exists == false
+
+- name: Copy apiserver-etcd-client.key to master
+  copy:
+    src: /tmp/apiserver-etcd-client.key
+    dest: /etc/kubernetes/pki/apiserver-etcd-client.key
+  when: apiserver_client_key.stat.exists == false
 
 - name: Generate bootstrap token
   shell: kubeadm token generate
