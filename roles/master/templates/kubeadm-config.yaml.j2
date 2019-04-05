@@ -1,6 +1,5 @@
-apiVersion: kubeadm.k8s.io/v1beta1
-kind: ClusterConfiguration
-kubernetesVersion: stable
+apiVersion: kubeadm.k8s.io/v1alpha3
+kind: InitConfiguration
 bootstrapTokens:
 - groups:
   - system:bootstrappers:kubeadm:default-node-token
@@ -9,6 +8,17 @@ bootstrapTokens:
   usages:
   - signing
   - authentication
+nodeRegistration:
+    criSocket: /var/run/dockershim.sock
+    name: {{ inventory_hostname }}
+    taints:
+    - effect: NoSchedule
+      key: node-role.kubernetes.io/master
+---
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+kubernetesVersion: stable
+clusterName: kubepi
 etcd:
     external:
         endpoints:
@@ -17,3 +27,6 @@ etcd:
         caFile: /etc/kubernetes/pki/etcd/ca.crt
         certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
         keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
+networking:
+    podSubnet: 192.168.1.0/16
+    serviceSubnet: 10.96.0.0/12
