@@ -1,4 +1,16 @@
 ---
+- name: Ensure kubernetes pki etcd directory exists
+  file:
+    path: /etc/kubernetes/pki/etcd
+    state: directory
+
+- name: Copy etcd ca cert from etcd-ca to master
+  synchronize:
+    src: /etc/kubernetes/pki/etcd/ca.crt
+    dest: /etc/kubernetes/pki/etcd/ca.crt
+    mode: pull
+    delegate_to: etcd-ca
+
 - name: Create kubeadm config
   template:
     src: "{{ role_path }}/templates/kubeadm-config.j2"
