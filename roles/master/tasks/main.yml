@@ -18,7 +18,7 @@
 
 - name: Create kubeadm config
   template:
-    src: "{{ role_path }}/templates/kubeadm-config.j2"
+    src: "{{ role_path }}/templates/kubeadm-config.yaml.j2"
     dest: /tmp/kubeadm-config.yaml
 
 - name: Generate bootstrap token
