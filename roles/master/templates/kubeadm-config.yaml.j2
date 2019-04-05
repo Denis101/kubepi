@@ -13,7 +13,7 @@ etcd:
     external:
         endpoints:
         {% for h in groups['etcd'] %}- https://{{ hostvars[h].ansible_default_ipv4.address }}:2379
-        {% endfor %}
+{% endfor %}
         caFile: /etc/kubernetes/pki/etcd/ca.crt
         certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
         keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
