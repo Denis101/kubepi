@@ -8,8 +8,7 @@
   synchronize:
     src: /etc/kubernetes/pki/etcd/ca.crt
     dest: /etc/kubernetes/pki/etcd/ca.crt
-    mode: pull
-    delegate_to: etcd-ca
+  delegate_to: etcd-ca
 
 - name: Create kubeadm config
   template:
