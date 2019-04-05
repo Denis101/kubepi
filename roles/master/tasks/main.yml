@@ -4,11 +4,17 @@
     path: /etc/kubernetes/pki/etcd
     state: directory
 
-- name: Copy etcd ca cert from etcd-ca to master
-  synchronize:
-    src: /etc/kubernetes/pki/etcd/ca.crt
-    dest: /etc/kubernetes/pki/etcd/ca.crt
+- name: Fetch ca.crt from etcd-ca group
+  fetch:
+    src: /etc/kubernetes/pki/etcd/ca.key
+    dest: /tmp/ca.key
+    flat: yes
   delegate_to: etcd-ca
+
+- name: Copy ca.crt to master
+  copy:
+    src: /tmp/ca.crt
+    dest: /etc/kubernetes/pki/etcd/ca.crt
 
 - name: Create kubeadm config
   template:
