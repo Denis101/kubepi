@@ -16,11 +16,6 @@
     src: /tmp/ca.crt
     dest: /etc/kubernetes/pki/etcd/ca.crt
 
-- name: Create kubeadm config
-  template:
-    src: "{{ role_path }}/templates/kubeadm-config.yaml.j2"
-    dest: /tmp/kubeadm-config.yaml
-
 - name: Generate bootstrap token
   shell: kubeadm token generate
   register: kubeadm_token
@@ -28,8 +23,13 @@
 - set_fact:
     bootstrap_token: kubeadm_token.stdout
 
+- name: Create kubeadm config
+  template:
+    src: "{{ role_path }}/templates/kubeadm-config.yaml.j2"
+    dest: /tmp/kubeadm-config.yaml
+
 - name: Initialise kubeadm
-  shell: kubeadm init --config /tmp/kubeadm-config.yaml --token {{ bootstrap_token }}
+  shell: kubeadm init --config /tmp/kubeadm-config.yaml
 
 - name: Apply weave plugin for networking
   shell: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
