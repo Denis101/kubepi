@@ -73,6 +73,11 @@
     src: "{{ role_path }}/templates/kubeadm-config.yaml.j2"
     dest: /tmp/kubeadm-config.yaml
 
+- name: Ensure kubelet is stopped
+  systemd:
+    name: kubelet
+    state: stopped
+
 - name: Initialise kubeadm
   shell: kubeadm init --config /tmp/kubeadm-config.yaml
 
