@@ -9,7 +9,7 @@
     src: /etc/kubernetes/pki/etcd/ca.key
     dest: /tmp/ca.key
     flat: yes
-  delegate_to: etcd-ca
+  delegate_to: "{{ hostvars[groups['etcd-ca'][0]].ansible_hostname }}"
 
 - name: Copy ca.crt to master
   copy:
