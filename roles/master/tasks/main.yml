@@ -6,13 +6,13 @@
 
 - name: Check ca.crt
   stat:
-    path: /etc/kubernetes/pki/etcd/ca.key
+    path: /etc/kubernetes/pki/etcd/ca.crt
   register: ca_crt
 
 - name: Fetch ca.crt from etcd-ca group
   fetch:
-    src: /etc/kubernetes/pki/etcd/ca.key
-    dest: /tmp/ca.key
+    src: /etc/kubernetes/pki/etcd/ca.crt
+    dest: /tmp/ca.crt
     flat: yes
   delegate_to: "{{ hostvars[groups['etcd-ca'][0]].ansible_hostname }}"
   when: ca_crt.stat.exists == false
