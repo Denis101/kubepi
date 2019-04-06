@@ -47,7 +47,7 @@
 
 - name: Install kubeadm
   apt:
-    name: kubeadm
+    name: kubeadm=1.14.0-00
   when: kubeadm.stat.exists == false
 
 - name: Pull kubeadm config images
