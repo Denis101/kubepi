@@ -8,6 +8,9 @@ bootstrapTokens:
   usages:
   - signing
   - authentication
+localAPIEndpoint:
+    advertiseAddress: {{ hostvars[inventory_hostname].ansible_default_ipv4.address }}
+    bindPort: 6443
 nodeRegistration:
     criSocket: /var/run/dockershim.sock
     name: {{ inventory_hostname }}
@@ -19,6 +22,7 @@ apiVersion: kubeadm.k8s.io/v1beta1
 kind: ClusterConfiguration
 kubernetesVersion: stable
 clusterName: kubepi
+controlPlaneEndpoint: {{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:6443
 etcd:
     external:
         endpoints:
